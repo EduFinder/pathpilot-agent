@@ -19,7 +19,13 @@ dependencies = [
   "python-dotenv"
 ]
 
+[tool.poetry]
+packages = [{include = "app"}]
 
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.0.0"
+flake8 = "^7.0.0"
+black = "^24.0.0"
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
