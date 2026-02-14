@@ -12,4 +12,5 @@ supabase = create_client(
 # quick test
 def test_connection():
     return supabase.table("students").select("*").execute()
-print(test_connection())
+if __name__ == "__main__":
+    print(test_connection())
