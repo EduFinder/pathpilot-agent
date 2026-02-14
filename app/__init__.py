@@ -9,5 +9,9 @@ def create_app():
     # Register API routes
     from app.api.routes import api_bp
     app.register_blueprint(api_bp)
+
+    @app.route('/')
+    def index():
+        return "PathPilot Agent is running! 🚀"
     
     return app
