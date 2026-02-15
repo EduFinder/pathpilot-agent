@@ -27,3 +27,11 @@ class StudentService:
             return response.data[0] if response.data else None
         except Exception as e:
             raise e
+
+    @staticmethod
+    def get_student_by_user_id(user_id: str):
+        try:
+            response = supabase.table(StudentService.TABLE_NAME).select("*").eq("user_id", user_id).execute()
+            return response.data[0] if response.data else None
+        except Exception as e:
+            raise e

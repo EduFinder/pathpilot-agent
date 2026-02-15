@@ -33,12 +33,5 @@ try:
 except Exception as e:
     print(f"FAILED: {e}")
 
-print("\n--- Testing Insert into 'onboarding_questions' ---")
-try:
-    # requires a valid student_id usually, but let's see if we get RLS error or FK error
-    # RLS error comes before FK error usually if using anon.
-    # But if we are service_role, we should get FK error if student_id is invalid, or success if nullable.
-    # Let's try to get the student id from previous step if it worked.
-    pass
 except Exception as e:
     print(f"FAILED: {e}")

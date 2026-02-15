@@ -18,11 +18,7 @@ class SupabaseServiceRoleClient:
                 postgrest_client_timeout=10,
                 schema="public",
                 auto_refresh_token=False,
-                persist_session=False,
-                headers={
-                    "apikey": key,
-                    "Authorization": f"Bearer {key}"
-                }
+                persist_session=False
             )
         )
 
@@ -31,7 +27,13 @@ class SupabaseServiceRoleClient:
 
     @property
     def storage(self):
+        # Storage often needs the service role key explicitly if RLS is strict
+        # But standard client init should handle it if key is correct.
         return self.client.storage
+
+    @property
+    def auth(self):
+        return self.client.auth
 
 supabase = SupabaseServiceRoleClient()
 

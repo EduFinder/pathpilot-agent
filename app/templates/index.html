@@ -1,86 +1,257 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PathPilot - Student Onboarding</title>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; background-color: #f5f5f5; }
-        .container { background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-        h1 { color: #2c3e50; text-align: center; }
-        .form-group { margin-bottom: 20px; }
-        label { display: block; margin-bottom: 8px; font-weight: 600; color: #34495e; }
-        input[type="text"], input[type="email"] { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; font-size: 16px; }
-        button { background-color: #3498db; color: white; padding: 12px 24px; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; width: 100%; transition: background 0.3s; }
-        button:hover { background-color: #2980b9; }
-        #loading { display: none; text-align: center; margin-top: 20px; color: #7f8c8d; }
-        #questions-section { display: none; margin-top: 30px; border-top: 1px solid #eee; padding-top: 20px; }
-        .question-card { background: #f9f9f9; padding: 15px; margin-bottom: 15px; border-radius: 5px; border-left: 4px solid #3498db; }
-        textarea { width: 100%; height: 80px; margin-top: 10px; padding: 10px; border: 1px solid #ddd; border-radius: 5px; }
-        .success-message { display: none; background: #dff0d8; color: #3c763d; padding: 15px; border-radius: 5px; text-align: center; margin-top: 20px; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #34495e;
+        }
+
+        input[type="text"],
+        input[type="email"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        button {
+            background-color: #3498db;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background-color: #2980b9;
+        }
+
+        #loading {
+            display: none;
+            text-align: center;
+            margin-top: 20px;
+            color: #7f8c8d;
+        }
+
+        #questions-section {
+            display: none;
+            margin-top: 30px;
+            border-top: 1px solid #eee;
+            padding-top: 20px;
+        }
+
+        .question-card {
+            background: #f9f9f9;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            border-left: 4px solid #3498db;
+        }
+
+        textarea {
+            width: 100%;
+            height: 80px;
+            margin-top: 10px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .success-message {
+            display: none;
+            background: #dff0d8;
+            color: #3c763d;
+            padding: 15px;
+            border-radius: 5px;
+            text-align: center;
+            margin-top: 20px;
+        }
     </style>
 </head>
+
 <body>
     <div class="container">
         <h1>PathPilot Onboarding</h1>
-        
-        <!-- Step 1: Upload Resume -->
-        <div id="step-1">
-            <form id="uploadForm">
-                <div class="form-group">
-                    <label>Full Name</label>
-                    <input type="text" id="name" required placeholder="John Doe">
-                </div>
-                <div class="form-group">
-                    <label>Email Address</label>
-                    <input type="email" id="email" required placeholder="john@example.com">
-                </div>
-                <div class="form-group">
-                    <label>Upload Resume (PDF)</label>
-                    <input type="file" id="resume" accept=".pdf" required>
-                </div>
-                <button type="submit">Start Onboarding</button>
-            </form>
+
+        <!-- Auth Section -->
+        <div id="auth-section" style="text-align: center; margin-bottom: 20px;">
+            <p id="user-info" style="display: none; margin-bottom: 10px;"></p>
+            <a href="/auth/login" id="login-btn"
+                style="display: inline-block; background-color: #db4437; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; font-weight: bold;">Login
+                with Google</a>
+            <a href="/auth/logout" id="logout-btn"
+                style="display: none; background-color: #555; color: white; padding: 8px 16px; text-decoration: none; border-radius: 5px; font-size: 14px;">Logout</a>
         </div>
 
-        <!-- Loading Indicator -->
-        <div id="loading">
-            <p>Analyzing your resume with AI... Please wait...</p>
-            <progress></progress>
-        </div>
+    </div>
 
-        <!-- Step 2: Answer Questions -->
-        <div id="questions-section">
-            <h2>Personalized Questions</h2>
-            <p>Based on your profile, please answer the following:</p>
-            <form id="answersForm">
-                <input type="hidden" id="studentId">
-                <div id="questions-list"></div>
-                <button type="submit">Submit Answers</button>
-            </form>
-        </div>
+    <!-- Step 1: Upload Resume -->
+    <div id="step-1" style="display: none;">
+        <form id="uploadForm">
+            <div class="form-group">
+                <label>Full Name</label>
+                <input type="text" id="name" required placeholder="John Doe">
+            </div>
+            <div class="form-group">
+                <label>Email Address</label>
+                <input type="email" id="email" required placeholder="john@example.com">
+            </div>
+            <div class="form-group">
+                <label>Upload Resume (PDF)</label>
+                <input type="file" id="resume" accept=".pdf" required>
+            </div>
+            <button type="submit">Start Onboarding</button>
+        </form>
+    </div>
 
-        <!-- Success Message -->
-        <div id="success-msg" class="success-message">
-            <h3>🎉 You're all set!</h3>
-            <p>Your profile has been created and answers saved.</p>
-        </div>
+    <!-- Loading Indicator -->
+    <div id="loading">
+        <p>Analyzing your resume with AI... Please wait...</p>
+        <progress></progress>
+    </div>
+
+    <!-- Step 2: Answer Questions -->
+    <div id="questions-section">
+        <h2>Personalized Questions</h2>
+        <p>Based on your profile, please answer the following:</p>
+        <form id="answersForm">
+            <input type="hidden" id="studentId">
+            <div id="questions-list"></div>
+            <button type="submit">Submit Answers</button>
+        </form>
+    </div>
+
+    <!-- Success Message -->
+    <div id="success-msg" class="success-message">
+        <h3>🎉 You're all set!</h3>
+        <p>Your profile has been created and answers saved.</p>
+    </div>
     </div>
 
     <script>
         const uploadForm = document.getElementById('uploadForm');
         const answersForm = document.getElementById('answersForm');
-        const loading = document.getElementById('loading');
-        const step1 = document.getElementById('step-1');
-        const step2 = document.getElementById('questions-section');
-        const successMsg = document.getElementById('success-msg');
+
+        // Auth Elements
+        const loginBtn = document.getElementById('login-btn');
+        const logoutBtn = document.getElementById('logout-btn');
+        const userInfo = document.getElementById('user-info');
+
+        // Check Auth Status
+        window.addEventListener('load', async () => {
+            try {
+                const res = await fetch('/auth/me');
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data.authenticated) {
+                        loginBtn.style.display = 'none';
+                        logoutBtn.style.display = 'inline-block';
+                        userInfo.style.display = 'block';
+                        userInfo.innerHTML = `Logged in as <strong>${data.user.email}</strong>`;
+
+                        // Check if profile already exists
+                        const statusRes = await fetch('/api/profile/status');
+                        const statusData = await statusRes.json();
+
+                        if (statusData.has_profile) {
+                            // User exists, show questions section or success
+                            if (statusData.questions && statusData.questions.length > 0) {
+                                document.getElementById('step-1').style.display = 'none';
+                                document.getElementById('questions-section').style.display = 'block';
+                                document.getElementById('studentId').value = statusData.student.id;
+
+                                const list = document.getElementById('questions-list');
+                                list.innerHTML = '';
+                                statusData.questions.forEach((q, index) => {
+                                    const div = document.createElement('div');
+                                    div.className = 'question-card';
+                                    div.innerHTML = `
+                                        <strong>Q${index + 1}: ${q.question}</strong>
+                                        <textarea name="answer_${q.id}" ${q.answer ? 'disabled' : ''} placeholder="Type your answer here...">${q.answer || ''}</textarea>
+                                    `;
+                                    list.appendChild(div);
+                                });
+
+                                if (statusData.questions.every(q => q.answer)) {
+                                    document.getElementById('success-msg').style.display = 'block';
+                                    answersForm.style.display = 'none';
+                                }
+                            } else {
+                                // Profile exists but no questions? Maybe needs onboarding or wait
+                                document.getElementById('step-1').style.display = 'block';
+                                document.getElementById('email').value = data.user.email;
+                                document.getElementById('email').readOnly = true;
+                            }
+                        } else {
+                            // New user, show onboarding form
+                            document.getElementById('step-1').style.display = 'block';
+                            const emailInput = document.getElementById('email');
+                            if (emailInput) {
+                                emailInput.value = data.user.email;
+                                emailInput.readOnly = true;
+                            }
+                        }
+                    } else {
+                        loginBtn.style.display = 'inline-block';
+                        logoutBtn.style.display = 'none';
+                        userInfo.style.display = 'none';
+                        document.getElementById('step-1').style.display = 'none';
+                    }
+                }
+            } catch (err) {
+                console.error("Auth/Status check failed", err);
+            }
+        });
 
         uploadForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            
+
+            // Ensure user is authenticated
+            const isLoggedIn = document.getElementById('user-info').style.display !== 'none';
+            if (!isLoggedIn) {
+                alert('Please login with Google first.');
+                return;
+            }
+
             // Show loading
-            step1.style.display = 'none';
-            loading.style.display = 'block';
+            document.getElementById('step-1').style.display = 'none';
+            document.getElementById('loading').style.display = 'block';
 
             const formData = new FormData();
             formData.append('name', document.getElementById('name').value);
@@ -92,15 +263,15 @@
                     method: 'POST',
                     body: formData
                 });
-                
+
                 const data = await response.json();
-                
+
                 if (response.ok) {
-                    loading.style.display = 'none';
-                    step2.style.display = 'block';
-                    
+                    document.getElementById('loading').style.display = 'none';
+                    document.getElementById('questions-section').style.display = 'block';
+
                     document.getElementById('studentId').value = data.student_id;
-                    
+
                     const list = document.getElementById('questions-list');
                     data.questions.forEach((q, index) => {
                         const div = document.createElement('div');
@@ -113,8 +284,8 @@
                     });
                 } else {
                     alert('Error: ' + data.error);
-                    loading.style.display = 'none';
-                    step1.style.display = 'block';
+                    document.getElementById('loading').style.display = 'none';
+                    document.getElementById('step-1').style.display = 'block';
                 }
             } catch (err) {
                 console.error(err);
@@ -124,10 +295,10 @@
 
         answersForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            
+
             const studentId = document.getElementById('studentId').value;
             const answers = [];
-            
+
             const textareas = document.querySelectorAll('textarea');
             textareas.forEach(t => {
                 const qId = t.name.replace('answer_', '');
@@ -148,8 +319,8 @@
                 });
 
                 if (response.ok) {
-                    step2.style.display = 'none';
-                    successMsg.style.display = 'block';
+                    document.getElementById('questions-section').style.display = 'none';
+                    document.getElementById('success-msg').style.display = 'block';
                 } else {
                     alert('Failed to save answers.');
                 }
@@ -160,4 +331,5 @@
         });
     </script>
 </body>
+
 </html>
