@@ -12,6 +12,7 @@ def create_app():
 
     @app.route('/')
     def index():
-        return "PathPilot Agent is running! 🚀"
+        from flask import render_template
+        return render_template('index.html')
     
     return app
