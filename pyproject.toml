@@ -1,3 +1,27 @@
+# PEP 621 standard [project] table — required by Vercel's uv runtime
+[project]
+name = "pathpilot-agent"
+version = "0.1.0"
+description = "PathPilot AI Agent Backend"
+requires-python = ">=3.10"
+dependencies = [
+    "supabase",
+    "openai",
+    "langchain",
+    "langgraph",
+    "tavily-python",
+    "pypdf",
+    "fastapi",
+    "uvicorn",
+    "python-dotenv",
+    "flask>=3.1.2",
+    "flask-cors>=6.0.2",
+    "langchain-openai>=1.1.9",
+    "sqlalchemy>=2.0.46",
+    "psycopg2-binary>=2.9.11",
+]
+
+# Poetry-specific config — used for local development
 [tool.poetry]
 name = "pathpilot-agent"
 version = "0.1.0"
