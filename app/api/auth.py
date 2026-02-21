@@ -1,5 +1,6 @@
 from flask import Blueprint, redirect, request, jsonify, url_for, session, current_app
 from app.db.db import supabase
+import os
 
 auth_bp = Blueprint('auth', __name__, url_prefix='/auth')
 
@@ -7,7 +8,13 @@ auth_bp = Blueprint('auth', __name__, url_prefix='/auth')
 def login():
     """Initiates Google OAuth login"""
     try:
-        redirect_url = url_for('auth.callback', _external=True)
+        # Use APP_BASE_URL env var so this works on Vercel (behind a proxy).
+        # Falls back to url_for for local development.
+        base_url = os.environ.get('APP_BASE_URL', '').rstrip('/')
+        if base_url:
+            redirect_url = f"{base_url}/auth/callback"
+        else:
+            redirect_url = url_for('auth.callback', _external=True)
         # supabase.auth.sign_in_with_oauth returns an object containing the provider URL
         res = supabase.auth.sign_in_with_oauth({
             "provider": "google",

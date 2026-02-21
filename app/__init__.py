@@ -1,5 +1,6 @@
 from flask import Flask
 from dotenv import load_dotenv
+from werkzeug.middleware.proxy_fix import ProxyFix
 import os
 
 
@@ -8,7 +9,11 @@ load_dotenv()
 def create_app():
     app = Flask(__name__)
     
+    # Handle Vercel's reverse proxy so url_for() generates correct external URLs
+    app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_prefix=1)
+
     app.secret_key = os.getenv("FLASK_SECRET_KEY", "super_secret_key_change_me")
+
 
     # Run auto-migrations on startup
     try:
