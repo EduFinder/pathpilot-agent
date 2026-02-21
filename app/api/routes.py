@@ -92,16 +92,19 @@ def onboarding_start():
             return jsonify({"error": f"Failed to upload resume: {str(storage_error)}"}), 500
         
         
-        # 2. Extract Text & Generate Questions (Optional - requires OpenAI API key)
+        # 2. Extract Text & Generate Questions + Profile Analysis
         questions = []
+        profile_analysis = ""
         try:
             from app.services.llm_service import LLMService
             llm_service = LLMService()
             resume_text = llm_service.extract_text_from_pdf(file_content)
-            questions = llm_service.generate_personalized_questions(resume_text, num_questions=3)
-            print(f"✅ Generated {len(questions)} questions from resume")
+            llm_result = llm_service.analyze_resume_and_generate_questions(resume_text, num_questions=4)
+            questions = llm_result.get("questions", [])
+            profile_analysis = llm_result.get("analysis", "")
+            print(f"Generated {len(questions)} questions and profile analysis")
         except Exception as llm_error:
-            print(f"⚠ Resume analysis skipped (OpenAI API not configured): {llm_error}")
+            print(f"Resume analysis skipped: {llm_error}")
             # Continue without questions
         
         # 3. Create Student
@@ -153,6 +156,7 @@ def onboarding_start():
         return jsonify({
             "message": "Onboarding started successfully",
             "student_id": student_id,
+            "profile_analysis": profile_analysis,
             "questions": saved_questions
         }), 201
 
