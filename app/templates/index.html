@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PathPilot - Your Higher Education Guide</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.07);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 20px;
+            padding: 40px;
+            width: 100%;
+            max-width: 640px;
+            color: #fff;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.4);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 32px;
+        }
+
+        .logo-icon {
+            width: 44px;
+            height: 44px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .logo h1 {
+            font-size: 22px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .logo span {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.5);
+            display: block;
+            margin-top: 2px;
+        }
+
+        /* ---- PANELS ---- */
+        .panel {
+            display: none;
+        }
+
+        .panel.active {
+            display: block;
+        }
+
+        /* Login panel */
+        #panel-login {
+            text-align: center;
+        }
+
+        #panel-login h2 {
+            font-size: 26px;
+            margin-bottom: 10px;
+        }
+
+        #panel-login p {
+            color: rgba(255, 255, 255, 0.6);
+            margin-bottom: 32px;
+            line-height: 1.6;
+        }
+
+        .btn-google {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            background: #fff;
+            color: #333;
+            padding: 14px 28px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 15px;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-google:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn-google img {
+            width: 20px;
+        }
+
+        /* Upload panel */
+        #panel-upload h2 {
+            font-size: 22px;
+            margin-bottom: 6px;
+        }
+
+        #panel-upload .subtitle {
+            color: rgba(255, 255, 255, 0.55);
+            font-size: 14px;
+            margin-bottom: 28px;
+        }
+
+        .user-badge {
+            background: rgba(102, 126, 234, 0.2);
+            border: 1px solid rgba(102, 126, 234, 0.4);
+            border-radius: 8px;
+            padding: 10px 14px;
+            font-size: 13px;
+            color: #a78bfa;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-size: 13px;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 8px;
+        }
+
+        input[type="text"],
+        input[type="email"] {
+            width: 100%;
+            padding: 13px 16px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            color: #fff;
+            font-size: 15px;
+            outline: none;
+            transition: border 0.2s;
+        }
+
+        input[type="text"]:focus,
+        input[type="email"]:focus {
+            border-color: #667eea;
+        }
+
+        input[type="text"]::placeholder,
+        input[type="email"]::placeholder {
+            color: rgba(255, 255, 255, 0.3);
+        }
+
+        .file-upload {
+            width: 100%;
+            padding: 32px;
+            border: 2px dashed rgba(255, 255, 255, 0.25);
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: border 0.2s, background 0.2s;
+        }
+
+        .file-upload:hover {
+            border-color: #667eea;
+            background: rgba(102, 126, 234, 0.05);
+        }
+
+        .file-upload p {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 14px;
+            margin-top: 8px;
+        }
+
+        .file-upload strong {
+            color: #a78bfa;
+        }
+
+        #resume {
+            display: none;
+        }
+
+        #file-name {
+            margin-top: 10px;
+            font-size: 13px;
+            color: #6ee7b7;
+        }
+
+        .btn-primary {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border: none;
+            border-radius: 12px;
+            color: #fff;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 8px;
+            transition: opacity 0.2s, transform 0.2s;
+        }
+
+        .btn-primary:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Loading panel */
+        #panel-loading {
+            text-align: center;
+        }
+
+        #panel-loading h2 {
+            font-size: 20px;
+            margin-bottom: 12px;
+        }
+
+        #panel-loading p {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 14px;
+        }
+
+        .spinner {
+            width: 56px;
+            height: 56px;
+            margin: 0 auto 24px;
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            border-top-color: #667eea;
+            border-radius: 50%;
+            animation: spin 0.9s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Analysis + Questions panel */
+        #panel-questions h2 {
+            font-size: 22px;
+            margin-bottom: 6px;
+        }
+
+        #panel-questions .subtitle {
+            color: rgba(255, 255, 255, 0.55);
+            font-size: 14px;
+            margin-bottom: 24px;
+        }
+
+        .analysis-card {
+            background: rgba(102, 126, 234, 0.15);
+            border: 1px solid rgba(102, 126, 234, 0.4);
+            border-radius: 12px;
+            padding: 16px 20px;
+            margin-bottom: 24px;
+        }
+
+        .analysis-label {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #a78bfa;
+            margin-bottom: 8px;
+        }
+
+        .analysis-text {
+            line-height: 1.7;
+            color: rgba(255, 255, 255, 0.85);
+            font-size: 14px;
+        }
+
+        .question-card {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-left: 3px solid #667eea;
+            border-radius: 10px;
+            padding: 16px;
+            margin-bottom: 14px;
+        }
+
+        .question-text {
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 10px;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 12px 14px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 8px;
+            color: #fff;
+            font-size: 14px;
+            font-family: 'Inter', sans-serif;
+            resize: vertical;
+            min-height: 80px;
+            outline: none;
+            transition: border 0.2s;
+        }
+
+        textarea:focus {
+            border-color: #667eea;
+        }
+
+        textarea::placeholder {
+            color: rgba(255, 255, 255, 0.3);
+        }
+
+        textarea:disabled {
+            opacity: 0.6;
+        }
+
+        /* Success panel */
+        #panel-success {
+            text-align: center;
+        }
+
+        .success-icon {
+            font-size: 60px;
+            margin-bottom: 16px;
+        }
+
+        #panel-success h2 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        #panel-success p {
+            color: rgba(255, 255, 255, 0.6);
+            line-height: 1.6;
+        }
+
+        .btn-logout {
+            display: inline-block;
+            margin-top: 24px;
+            background: rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.7);
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: none;
+            font-size: 13px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background 0.2s;
+        }
+
+        .btn-logout:hover {
+            background: rgba(255, 255, 255, 0.18);
+        }
+
+        .error-box {
+            background: rgba(239, 68, 68, 0.15);
+            border: 1px solid rgba(239, 68, 68, 0.4);
+            border-radius: 8px;
+            padding: 12px 16px;
+            font-size: 13px;
+            color: #fca5a5;
+            margin-top: 14px;
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="card">
+        <!-- Logo -->
+        <div class="logo">
+            <div class="logo-icon">🧭</div>
+            <div>
+                <h1>PathPilot</h1>
+                <span>AI Higher Education Advisor</span>
+            </div>
+        </div>
+
+        <!-- Panel: Login -->
+        <div id="panel-login" class="panel active">
+            <h2>Find Your Perfect University</h2>
+            <p>PathPilot analyzes your profile and guides you to the right graduate programs worldwide. Upload your
+                resume and let AI do the research.</p>
+            <a href="/auth/login" class="btn-google" id="login-btn">
+                <img src="https://www.google.com/favicon.ico" alt="Google"> Continue with Google
+            </a>
+        </div>
+
+        <!-- Panel: Upload Resume -->
+        <div id="panel-upload" class="panel">
+            <h2>Let's Get Started</h2>
+            <p class="subtitle">Upload your resume so PathPilot can personalize your university recommendations.</p>
+
+            <div class="user-badge" id="user-badge">
+                Logged in as <strong id="user-email-badge">&nbsp;</strong>&nbsp;
+                &nbsp;&middot;&nbsp; <a href="/auth/logout" class="btn-logout"
+                    style="margin:0;padding:0;background:none;font-size:13px;color:#a78bfa;">Logout</a>
+            </div>
+
+            <form id="uploadForm">
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" id="name" required placeholder="Your full name">
+                </div>
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <input type="email" id="email" required placeholder="your@email.com" readonly>
+                </div>
+                <div class="form-group">
+                    <label>Resume / CV (PDF)</label>
+                    <div class="file-upload" onclick="document.getElementById('resume').click()">
+                        <div style="font-size:32px;">📄</div>
+                        <p><strong>Click to upload</strong> your PDF resume</p>
+                        <p id="file-name">No file selected</p>
+                    </div>
+                    <input type="file" id="resume" accept=".pdf" required>
+                </div>
+                <button type="submit" class="btn-primary" id="submit-btn">Analyze My Profile &rarr;</button>
+                <div class="error-box" id="upload-error"></div>
+            </form>
+        </div>
+
+        <!-- Panel: Loading -->
+        <div id="panel-loading" class="panel">
+            <div class="spinner"></div>
+            <h2>Analyzing Your Resume...</h2>
+            <p>Our AI is reading your background and crafting personalized questions to find the right universities for
+                you. This takes about 15–30 seconds.</p>
+        </div>
+
+        <!-- Panel: Questions -->
+        <div id="panel-questions" class="panel">
+            <h2>Help PathPilot Guide You</h2>
+            <p class="subtitle">Answer a few quick questions so we can find the best programs for you.</p>
+
+            <div class="analysis-card" id="analysis-card" style="display:none;">
+                <div class="analysis-label">Your Profile Summary</div>
+                <div class="analysis-text" id="analysis-text"></div>
+            </div>
+
+            <form id="answersForm">
+                <input type="hidden" id="studentId">
+                <div id="questions-list"></div>
+                <button type="submit" class="btn-primary">Save My Preferences &rarr;</button>
+                <div class="error-box" id="answers-error"></div>
+            </form>
+        </div>
+
+        <!-- Panel: Success -->
+        <div id="panel-success" class="panel">
+            <div class="success-icon">🎓</div>
+            <h2>You're All Set!</h2>
+            <p>PathPilot has your profile. We'll now help you find the best universities and graduate programs tailored
+                to your background and goals.</p>
+            <a href="/auth/logout" class="btn-logout">Logout</a>
+        </div>
+    </div>
+
+    <script>
+        // ---- Utility: show a specific panel ----
+        function showPanel(id) {
+            document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+        }
+
+        // ---- File picker label ----
+        document.getElementById('resume').addEventListener('change', function () {
+            document.getElementById('file-name').textContent = this.files[0]
+                ? this.files[0].name
+                : 'No file selected';
+        });
+
+        // ---- On page load: check auth status ----
+        window.addEventListener('load', async () => {
+            try {
+                const res = await fetch('/auth/me');
+                if (!res.ok) { showPanel('panel-login'); return; }
+                const data = await res.json();
+
+                if (!data.authenticated) {
+                    showPanel('panel-login');
+                    return;
+                }
+
+                // User is logged in — fill badge
+                document.getElementById('user-email-badge').textContent = data.user.email;
+                document.getElementById('email').value = data.user.email;
+
+                // Check if profile already exists
+                const statusRes = await fetch('/api/profile/status');
+                const statusData = await statusRes.json();
+
+                if (statusData.has_profile && statusData.onboarding_complete) {
+                    // Already done — go straight to success
+                    showPanel('panel-success');
+                } else if (statusData.has_profile && statusData.questions && statusData.questions.length > 0) {
+                    // Profile exists, has questions, but not all answered — show questions
+                    showPanel('panel-questions');
+                    document.getElementById('studentId').value = statusData.student.id;
+                    renderQuestions(statusData.questions);
+                } else {
+                    // New user — show upload form
+                    showPanel('panel-upload');
+                }
+            } catch (err) {
+                console.error('Auth check failed:', err);
+                showPanel('panel-login');
+            }
+        });
+
+        // ---- Upload Form Submit ----
+        document.getElementById('uploadForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            document.getElementById('upload-error').style.display = 'none';
+
+            const resumeFile = document.getElementById('resume').files[0];
+            if (!resumeFile) { alert('Please select a PDF file.'); return; }
+
+            showPanel('panel-loading');
+
+            const formData = new FormData();
+            formData.append('name', document.getElementById('name').value);
+            formData.append('email', document.getElementById('email').value);
+            formData.append('resume', resumeFile);
+
+            try {
+                const response = await fetch('/api/onboarding', { method: 'POST', body: formData });
+                const data = await response.json();
+
+                if (response.ok) {
+                    document.getElementById('studentId').value = data.student_id;
+
+                    if (data.profile_analysis) {
+                        document.getElementById('analysis-text').textContent = data.profile_analysis;
+                        document.getElementById('analysis-card').style.display = 'block';
+                    }
+
+                    renderQuestions(data.questions);
+                    showPanel('panel-questions');
+                } else {
+                    showPanel('panel-upload');
+                    const errBox = document.getElementById('upload-error');
+                    errBox.textContent = 'Error: ' + (data.error || 'Something went wrong.');
+                    errBox.style.display = 'block';
+                }
+            } catch (err) {
+                console.error(err);
+                showPanel('panel-upload');
+                const errBox = document.getElementById('upload-error');
+                errBox.textContent = 'Network error. Please try again.';
+                errBox.style.display = 'block';
+            }
+        });
+
+        function renderQuestions(questions) {
+            const list = document.getElementById('questions-list');
+            list.innerHTML = '';
+            questions.forEach((q, i) => {
+                const div = document.createElement('div');
+                div.className = 'question-card';
+                div.innerHTML = `
+                <div class="question-text">Q${i + 1}: ${q.question}</div>
+                <textarea name="answer_${q.id}" ${q.answer ? 'disabled' : ''}
+                    placeholder="Your answer...">${q.answer || ''}</textarea>
+            `;
+                list.appendChild(div);
+            });
+
+            // If all already answered, skip to success
+            if (questions.length > 0 && questions.every(q => q.answer)) {
+                showPanel('panel-success');
+            }
+        }
+
+        // ---- Answer Form Submit ----
+        document.getElementById('answersForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            document.getElementById('answers-error').style.display = 'none';
+
+            const studentId = document.getElementById('studentId').value;
+            const answers = [];
+            document.querySelectorAll('#questions-list textarea').forEach(t => {
+                const qId = t.name.replace('answer_', '');
+                answers.push({ question_id: qId, answer: t.value });
+            });
+
+            try {
+                const response = await fetch('/api/onboarding/answers', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ student_id: studentId, answers })
+                });
+
+                if (response.ok) {
+                    showPanel('panel-success');
+                } else {
+                    const data = await response.json();
+                    const errBox = document.getElementById('answers-error');
+                    errBox.textContent = 'Failed to save answers: ' + (data.error || 'Unknown error');
+                    errBox.style.display = 'block';
+                }
+            } catch (err) {
+                console.error(err);
+            }
+        });
+    </script>
+</body>
+
+</html>
