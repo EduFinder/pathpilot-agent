@@ -1,41 +1,33 @@
-from supabase import create_client, ClientOptions
 import os
 from dotenv import load_dotenv
 
+# Load .env FIRST before anything else
 load_dotenv()
 
-# We need to explicitly set the Authorization header to ensure the Service Key works correctly
-# and isn't overridden by some default 'anon' behavior of the client.
-key = os.getenv("SUPABASE_KEY")
-url = os.getenv("SUPABASE_URL")
+from supabase import create_client, ClientOptions
 
-class SupabaseServiceRoleClient:
-    def __init__(self):
-        self.client = create_client(
-            url,
-            key,
-            options=ClientOptions(
-                postgrest_client_timeout=10,
-                schema="public",
-                auto_refresh_token=False,
-                persist_session=False
-            )
+def _get_supabase_client():
+    url = os.getenv("SUPABASE_URL")
+    key = os.getenv("SUPABASE_KEY")
+
+    if not url or not key:
+        raise ValueError(
+            f"Missing Supabase credentials. SUPABASE_URL={'SET' if url else 'MISSING'}, "
+            f"SUPABASE_KEY={'SET' if key else 'MISSING'}"
         )
 
-    def table(self, text):
-        return self.client.table(text)
+    return create_client(
+        url,
+        key,
+        options=ClientOptions(
+            postgrest_client_timeout=10,
+            schema="public",
+            auto_refresh_token=False,
+            persist_session=False,
+        )
+    )
 
-    @property
-    def storage(self):
-        # Storage often needs the service role key explicitly if RLS is strict
-        # But standard client init should handle it if key is correct.
-        return self.client.storage
-
-    @property
-    def auth(self):
-        return self.client.auth
-
-supabase = SupabaseServiceRoleClient()
+supabase = _get_supabase_client()
 
 # quick test
 def test_connection():
